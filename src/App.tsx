@@ -236,15 +236,16 @@ export default function App() {
     setIsGenerating(true);
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
       
       const prompt = `Generate 5 short, inspiring quotes about creativity, minimalism, and design. 
       Format the output as a JSON array of objects with 'text' and 'author' fields. 
       Do not include markdown code blocks.`;
       
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      const text = response.text();
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+      });
+      const text = response.text || '';
       
       // Clean up potential markdown
       const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
